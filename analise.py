@@ -1,12 +1,16 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
+from db_conn import connect_db
 
-# df = pd.DataFrame('dados.csv')
+connection = connect_db()
+
+df = pd.read_sql('SELECT * FROM dados', connection)
 
 # funcao para grafico de barras de uma unica moeda
-def bars():
-    datas = [1, 2, 3, 4, 5 ,6, 7, 8]
-    valores = [5, 7, 8, 7, 8, 8, 11, 30]
+def bars(tempo=30):
+    datas = df['DIA_COTACAO'][tempo]
+    valores = df['valor_cotacao'][tempo]  
     plt.figure(figsize=(7, 7))
     plt.bar(datas, valores)
     plt.title("Cotacao de dolar ao longo do tempo x")
@@ -14,4 +18,16 @@ def bars():
     plt.ylabel("Valores em $")
     plt.show()
 
-bars()
+
+def media(tempo=30):
+    valores = df['valores'][tempo]
+    valores_filtrados = []
+    
+    # adicionando valores numa lista
+    [valores_filtrados.append(valor) for valor in valores]
+    
+    media = np.mean(valores_filtrados)
+
+    return media
+    
+
